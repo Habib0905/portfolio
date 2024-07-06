@@ -8,7 +8,7 @@ const Contact = () => {
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
   const [popupVisible, setPopupVisible] = useState(false);
-  const [popupMessage, setPopupMessage] = useState("");
+  const [popupType, setPopupType] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -17,16 +17,18 @@ const Contact = () => {
     formData.append("userEmail", userEmail);
     formData.append("subject", subject);
     formData.append("body", message); // Ensure this matches the parameter name in the controller
+    setPopupType("wait");
+    setPopupVisible(true);
 
     try {
       await axios.post("http://localhost:8080/contact", formData);
-      setPopupMessage("Message sent successfully!");
+      setPopupType("success");
       setPopupVisible(true);
       setTimeout(() => {
         setPopupVisible(false);
       }, 3000); // Hide the pop-up after 3 seconds
     } catch (error) {
-      setPopupMessage("Error sending message.");
+      setPopupType("error");
       setPopupVisible(true);
       setTimeout(() => {
         setPopupVisible(false);
@@ -35,7 +37,7 @@ const Contact = () => {
   };
   return (
     <div>
-      <PopUp message={popupMessage} isVisible={popupVisible} />
+      <PopUp type={popupType} isVisible={popupVisible} />
       <form onSubmit={handleSubmit}>
         <div className="relative min-h-screen md:w-full bg-gradient-to-b from-blue-800 via-blue-700 to-gray-900 text-center flex flex-col items-center overflow-hidden">
           <div className="absolute bottom-32 flex flex-col items-center w-full">
